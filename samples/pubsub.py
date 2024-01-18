@@ -124,23 +124,23 @@ if __name__ == '__main__':
     # Publish message to server desired number of times.
     # This step is skipped if message is blank.
     # This step loops forever if count was set to 0.
-    if message_string:
-        if message_count == 0:
-            print("Sending messages until program killed")
-        else:
-            print("Sending {} message(s)".format(message_count))
+    # if message_string:
+    #     if message_count == 0:
+    #         print("Sending messages until program killed")
+    #     else:
+    #         print("Sending {} message(s)".format(message_count))
 
-        publish_count = 1
-        while (publish_count <= message_count) or (message_count == 0):
-            message = "{} [{}]".format(message_string, publish_count)
-            print("Publishing message to topic '{}': {}".format(message_topic, message))
-            message_json = json.dumps(message)
-            mqtt_connection.publish(
-                topic=message_topic,
-                payload=message_json,
-                qos=mqtt.QoS.AT_LEAST_ONCE)
-            time.sleep(1)
-            publish_count += 1
+    #     publish_count = 1
+    #     while (publish_count <= message_count) or (message_count == 0):
+    #         message = "{} [{}]".format(message_string, publish_count)
+    #         print("Publishing message to topic '{}': {}".format(message_topic, message))
+    #         message_json = json.dumps(message)
+    #         mqtt_connection.publish(
+    #             topic=message_topic,
+    #             payload=message_json,
+    #             qos=mqtt.QoS.AT_LEAST_ONCE)
+    #         time.sleep(1)
+    #         publish_count += 1
 
     # Wait for all messages to be received.
     # This waits forever if count was set to 0.

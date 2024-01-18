@@ -121,6 +121,16 @@ if __name__ == '__main__':
     subscribe_result = subscribe_future.result()
     print("Subscribed with {}".format(str(subscribe_result['qos'])))
 
+    # Start Message
+    message = "{} [{}]".format("boot complete", "IP address")
+    print("Publishing message to topic '{}': {}".format(message_topic, message))
+    message_json = json.dumps(message)
+    mqtt_connection.publish(
+        topic=message_topic,
+        payload=message_json,
+        qos=mqtt.QoS.AT_LEAST_ONCE)
+
+
     # Publish message to server desired number of times.
     # This step is skipped if message is blank.
     # This step loops forever if count was set to 0.

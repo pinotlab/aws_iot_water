@@ -8,6 +8,7 @@ import threading
 import time
 import json
 from utils.command_line_utils import CommandLineUtils
+import socket
 
 # This sample uses the Message Broker for AWS IoT to send and receive messages
 # through an MQTT connection. On startup, the device connects to the server,
@@ -72,6 +73,15 @@ def on_connection_failure(connection, callback_data):
 def on_connection_closed(connection, callback_data):
     print("Connection closed")
 
+def get_ip_address():
+    try:
+        # 호스트 이름을 가져와서 IP 주소로 변환
+        hostname = socket.gethostname()
+        ip_address = socket.gethostbyname(hostname)
+        return ip_address
+    except:
+        return "Unable to get IP Address"
+
 if __name__ == '__main__':
     # Create the proxy options if the data is present in cmdData
     proxy_options = None
@@ -122,7 +132,8 @@ if __name__ == '__main__':
     print("Subscribed with {}".format(str(subscribe_result['qos'])))
 
     # Start Message
-    message = "{} [{}]".format("boot complete", "IP address")
+    ip_address = get_ip_address()
+    message = "{} [{}]".format("boot complete", ip_address)
     print("Publishing message to topic '{}': {}".format(message_topic, message))
     message_json = json.dumps(message)
     mqtt_connection.publish(

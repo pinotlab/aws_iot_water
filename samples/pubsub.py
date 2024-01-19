@@ -138,9 +138,50 @@ if __name__ == '__main__':
         topic=message_topic,
         payload=message_json,
         qos=mqtt.QoS.AT_LEAST_ONCE)
+    
+    while True:
+        print("Press '1' to send 'hello', '2' to send 'PinotLab.', or 'q' to quit:")
+        if sys.platform == 'win32':
+            import msvcrt
+            key = msvcrt.getch()
+        else:
+            key = sys.stdin.read(1)
+
+        # 키에 따라 메시지 결정
+        if key == '1':
+            message_json = json.dumps({"message": "hello"})
+        elif key == '2':
+            message_json = json.dumps({"message": "PinotLab."})
+        elif key == 'q':
+            break
+        else:
+            continue
+
+        # 메시지 발행
+        print(f"Publishing message to topic '{message_topic}': {message_json}")
+        mqtt_connection.publish(
+            topic=message_topic,
+            payload=message_json,
+            qos=mqtt.QoS.AT_LEAST_ONCE)
+   
+
+    # Wait for all messages to be received.
+    # This waits forever if count was set to 0.
+    if message_count != 0 and not received_all_event.is_set():
+        print("Waiting for all messages to be received...")
+
+    received_all_event.wait()
+    print("{} message(s) received.".format(received_count))
+
+    # Disconnect
+    print("Disconnecting...")
+    disconnect_future = mqtt_connection.disconnect()
+    disconnect_future.result()
+    print("Disconnected!")
 
 
-    # Publish message to server desired number of times.
+
+     # Publish message to server desired number of times.
     # This step is skipped if message is blank.
     # This step loops forever if count was set to 0.
     # if message_string:
@@ -160,17 +201,3 @@ if __name__ == '__main__':
     #             qos=mqtt.QoS.AT_LEAST_ONCE)
     #         time.sleep(1)
     #         publish_count += 1
-
-    # Wait for all messages to be received.
-    # This waits forever if count was set to 0.
-    if message_count != 0 and not received_all_event.is_set():
-        print("Waiting for all messages to be received...")
-
-    received_all_event.wait()
-    print("{} message(s) received.".format(received_count))
-
-    # Disconnect
-    print("Disconnecting...")
-    disconnect_future = mqtt_connection.disconnect()
-    disconnect_future.result()
-    print("Disconnected!")

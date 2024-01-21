@@ -9,6 +9,9 @@ import time
 import json
 from utils.command_line_utils import CommandLineUtils
 import netifaces as ni
+import os
+import socket
+import logging
 
 # This sample uses the Message Broker for AWS IoT to send and receive messages
 # through an MQTT connection. On startup, the device connects to the server,
@@ -23,6 +26,13 @@ cmdData = CommandLineUtils.parse_sample_input_pubsub()
 
 received_count = 0
 received_all_event = threading.Event()
+
+logging.basicConfig(
+    level=logging.DEBUG,  # 로그 레벨 설정
+    format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',  # 로그 포맷
+    filename='app.log',  # 로그를 기록할 파일 이름
+    filemode='a'  # 파일 모드, 'a'는 추가 모드, 'w'는 덮어쓰기 모드
+)
 
 # Callback when connection is accidentally lost.
 def on_connection_interrupted(connection, error, **kwargs):
@@ -73,6 +83,21 @@ def on_connection_failure(connection, callback_data):
 def on_connection_closed(connection, callback_data):
     print("Connection closed")
 
+# Wi-Fi 연결 상태를 확인하는 함수
+def is_wifi_connected(hostname="8.8.8.8", port=53, timeout=3):
+    """
+    DNS 서버에 소켓 연결을 시도하여 인터넷 연결 상태를 확인합니다.
+    기본적으로 Google의 DNS 서버(8.8.8.8)를 대상으로 합니다.
+    """
+    try:
+        # 소켓 연결을 통해 외부 서버와의 연결을 시도합니다.
+        socket.setdefaulttimeout(timeout)
+        socket.socket(socket.AF_INET, socket.SOCK_STREAM).connect((hostname, port))
+        return True
+    except socket.error as ex:
+        print(f"Wi-Fi 연결 실패: {ex}")
+        return False
+
 def get_wlan0_ip_address():
     try:
         ip_info = ni.ifaddresses('wlan0')[ni.AF_INET][0]
@@ -82,6 +107,15 @@ def get_wlan0_ip_address():
 
 if __name__ == '__main__':
     # Create the proxy options if the data is present in cmdData
+    logging.info("Start Pinot!")
+
+    # Wi-Fi가 연결될 때까지 기다리는 반복문
+    while not is_wifi_connected():
+        logging.info("Trying to connect Wi-Fi...")
+        time.sleep(3)  # 5초 대기
+    
+    logging.info("Wifi-connected")
+
     proxy_options = None
     if cmdData.input_proxy_host is not None and cmdData.input_proxy_port != 0:
         proxy_options = http.HttpProxyOptions(

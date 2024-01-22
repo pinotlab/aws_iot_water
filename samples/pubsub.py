@@ -68,6 +68,11 @@ def on_message_received(topic, payload, dup, qos, retain, **kwargs):
     received_count += 1
     if received_count == cmdData.input_count:
         received_all_event.set()
+    mqtt_connection.publish(
+            topic=message_topic,
+            payload=payload,
+            qos=mqtt.QoS.AT_LEAST_ONCE)
+    print("success sending")
 
 # Callback when the connection successfully connects
 def on_connection_success(connection, callback_data):
@@ -154,9 +159,10 @@ if __name__ == '__main__':
     message_string = cmdData.input_message
 
     # Subscribe
-    print("Subscribing to topic '{}'...".format(message_topic))
+    sub_topic = "device/1001/sensortest"
+    print("Subscribing to topic '{}'...".format(sub_topic))
     subscribe_future, packet_id = mqtt_connection.subscribe(
-        topic=message_topic,
+        topic=sub_topic,
         qos=mqtt.QoS.AT_LEAST_ONCE,
         callback=on_message_received)
 
@@ -206,12 +212,10 @@ if __name__ == '__main__':
             break
         else:
             continue
-        temp_topic = "device/1001/data"
         # 메시지 발행
-        print(f"Publishing message to topic '{temp_topic}': {message_json}")
+        print(f"Publishing message to topic '{message_topic}': {message_json}")
         mqtt_connection.publish(
-            # topic=message_topic,
-            topic=temp_topic,
+            topic=message_topic,
             payload=message_json,
             qos=mqtt.QoS.AT_LEAST_ONCE)
    

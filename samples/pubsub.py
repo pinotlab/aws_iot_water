@@ -206,12 +206,12 @@ if __name__ == '__main__':
             break
         else:
             continue
-
+        temp_topic = "device/1001/data"
         # 메시지 발행
-        print(f"Publishing message to topic '{message_topic}': {message_json}")
+        print(f"Publishing message to topic '{temp_topic}': {message_json}")
         mqtt_connection.publish(
             # topic=message_topic,
-            topic="device/1001/data",
+            topic=temp_topic,
             payload=message_json,
             qos=mqtt.QoS.AT_LEAST_ONCE)
    

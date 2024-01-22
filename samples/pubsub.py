@@ -183,7 +183,7 @@ if __name__ == '__main__':
 
         # 키에 따라 메시지 결정
         if key == '1':
-            message_json = json.dumps({{
+            message_json = json.dumps({
                 "temperature": 24,
                 "humidity": 80,
                 "barometer": 1013,
@@ -191,9 +191,9 @@ if __name__ == '__main__':
                 "velocity": 22,
                 "bearing": 255
                 }
-            }})
+            })
         elif key == '2':
-            message_json = json.dumps({{
+            message_json = json.dumps({
                 "temperature": 42,
                 "humidity": 60,
                 "barometer": 999,
@@ -201,7 +201,7 @@ if __name__ == '__main__':
                 "velocity": 10,
                 "bearing": 300
                 }
-            }})
+            })
         elif key == 'q':
             break
         else:

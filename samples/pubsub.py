@@ -183,9 +183,25 @@ if __name__ == '__main__':
 
         # 키에 따라 메시지 결정
         if key == '1':
-            message_json = json.dumps({"message": "hello"})
+            message_json = json.dumps({{
+                "temperature": 24,
+                "humidity": 80,
+                "barometer": 1013,
+                "wind": {
+                "velocity": 22,
+                "bearing": 255
+                }
+            }})
         elif key == '2':
-            message_json = json.dumps({"message": "PinotLab."})
+            message_json = json.dumps({{
+                "temperature": 42,
+                "humidity": 60,
+                "barometer": 999,
+                "wind": {
+                "velocity": 10,
+                "bearing": 300
+                }
+            }})
         elif key == 'q':
             break
         else:
@@ -194,7 +210,8 @@ if __name__ == '__main__':
         # 메시지 발행
         print(f"Publishing message to topic '{message_topic}': {message_json}")
         mqtt_connection.publish(
-            topic=message_topic,
+            # topic=message_topic,
+            topic="device/1001/data",
             payload=message_json,
             qos=mqtt.QoS.AT_LEAST_ONCE)
    

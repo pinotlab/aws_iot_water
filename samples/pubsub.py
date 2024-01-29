@@ -159,7 +159,7 @@ if __name__ == '__main__':
     message_string = cmdData.input_message
 
     # Subscribe
-    sub_topic = "device/1001/sensortest"
+    sub_topic = "device/1000/sensortest"
     print("Subscribing to topic '{}'...".format(sub_topic))
     subscribe_future, packet_id = mqtt_connection.subscribe(
         topic=sub_topic,

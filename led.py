@@ -17,7 +17,7 @@ R = GPIO.PWM(pins['R'], 2000)  # 2kHz
 G = GPIO.PWM(pins['G'], 2000)  # 2kHz
 B = GPIO.PWM(pins['B'], 2000)  # 2kHz
 
-# PWM 시작. Duty Cycle = 0 (LED OFF)
+# PWM 시작. Duty Cycle = 100 (LED OFF), 0(LED ON)
 R.start(100)
 G.start(100)
 B.start(100)

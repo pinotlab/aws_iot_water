@@ -46,7 +46,7 @@ try:
     while True:
         if time.time() - old_time > 1:
             flow_rate = (pulse_count / calibration_factor) / (time.time() - old_time) * 60
-            flow_millilitres = (flow_rate / 60) * 1000  # 수정된 부분
+            flow_millilitres = (flow_rate / 60) * 16700
             total_millilitres += flow_millilitres
 
             # 유량 변화에 따른 LED 색상 변경
@@ -56,7 +56,7 @@ try:
                 set_color(0, 100, 100)  # 빨간색
 
             print(f"Flow rate: {flow_rate:.2f} mL/min")
-            print(f"Total volume: {total_millilitres:.2f} mL")
+            print(f"Total volume: {total_millilitres/1000:.2f} mL")
 
             pulse_count = 0
             old_time = time.time()

@@ -76,7 +76,7 @@ try:
         current_time = time.time()
         if current_time - old_time > 1:
             flow_rate = (pulse_count / calibration_factor) / (current_time - old_time) * 60
-            flow_millilitres = (flow_rate / 60) * 16700
+            flow_millilitres = (flow_rate / 60) * 16.700
             # total_millilitres += flow_millilitres
 
             if flow_rate > 0:
@@ -92,13 +92,13 @@ try:
             # 물 흐름이 있었고, 정해진 시간 동안 물 흐름이 없었을 때 MQTT 메시지 전송
             if flow_started and (current_time - last_flow_time >= flow_stop_delay):
                 publisher.publish_message({
-                    "flowrate": total_millilitres,
+                    "flowrate": round(total_millilitres, 2),
                     "time": get_current_time_str(),
                     'temperature': -5,
                     'humidity': 30,
                     'barometer': 200
                 })
-                print(f"Total volume sent: {total_millilitres/1000:.2f} L")
+                print(f"Total volume sent: {total_millilitres:.2f} mL")
                 flow_started = False  # 메시지 전송 후 흐름 상태 리셋
 
             print(f"Flow rate: {flow_rate:.2f} mL/min")

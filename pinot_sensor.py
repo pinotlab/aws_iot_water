@@ -8,9 +8,9 @@ GPIO.setmode(GPIO.BCM)
 
 # AWS IoT Core 연결 정보
 endpoint = "a1abb207ddrmxk-ats.iot.ap-northeast-2.amazonaws.com"
-ca_file = "/home/pi/root-CA.crt"
-cert_file = "/home/pi/Rasp001.cert.pem"
-key_file = "/home/pi/Rasp001.private.key"
+ca_file = "~/root-CA.crt"
+cert_file = "~/Rasp001.cert.pem"
+key_file = "~/Rasp001.private.key"
 client_id = "rasp001"
 topic = "device/1001/data"
 

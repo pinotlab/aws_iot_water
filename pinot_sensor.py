@@ -77,7 +77,7 @@ try:
         if current_time - old_time > 1:
             flow_rate = (pulse_count / calibration_factor) / (current_time - old_time) * 60
             flow_millilitres = (flow_rate / 60) * 16700
-            total_millilitres += flow_millilitres
+            # total_millilitres += flow_millilitres
 
             if flow_rate > 0:
                 if not flow_started:

@@ -102,7 +102,7 @@ try:
                 flow_started = False  # 메시지 전송 후 흐름 상태 리셋
 
             print(f"Flow rate: {flow_rate:.2f} mL/min")
-            print(f"Current volume: {total_millilitres/1000:.2f} L")
+            print(f"Current volume: {total_millilitres:.2f} mL")
 
             pulse_count = 0
             old_time = current_time

@@ -1,7 +1,7 @@
 import RPi.GPIO as GPIO
 import time
 from datetime import datetime
-from sample.pinot_sensor import AwsIotPublisher 
+from samples.pinot_aws_mqtt import AwsIotPublisher 
 
 # GPIO 핀 번호 설정 모드
 GPIO.setmode(GPIO.BCM)

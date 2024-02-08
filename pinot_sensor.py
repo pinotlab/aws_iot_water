@@ -46,6 +46,10 @@ def set_color(r, g, b):
     G.ChangeDutyCycle(g)
     B.ChangeDutyCycle(b)
 
+def get_current_time_str():
+    # ISO 8601 형식 (예: 2024-02-07T15:00:00)
+    return datetime.now().isoformat()
+
 # 유량 센서 설정
 sensor_pin = 18
 GPIO.setup(sensor_pin, GPIO.IN, pull_up_down=GPIO.PUD_UP)
@@ -74,6 +78,14 @@ try:
                 set_color(100, 0, 100)  # 초록색
             else:
                 set_color(0, 100, 100)  # 빨간색
+                publisher.publish_message({
+                    "flowrate": total_millilitres,
+                    "time": get_current_time_str(),
+                    'temperature': -5,
+                    'humidity': 30,
+                    'barometer':200
+                })
+                total_millilitres = 0
 
             print(f"Flow rate: {flow_rate:.2f} mL/min")
             print(f"Total volume: {total_millilitres/1000:.2f} mL")

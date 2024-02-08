@@ -66,32 +66,46 @@ GPIO.add_event_detect(sensor_pin, GPIO.FALLING, callback=pulse_counter)
 
 old_time = time.time()
 
+# 물 흐름이 시작되었는지와 마지막으로 물이 흐른 시간을 추적하는 변수를 추가
+flow_started = False
+last_flow_time = 0
+flow_stop_delay = 3  # 물 흐름이 멈춘 것으로 간주하기 전에 기다릴 시간 (초)
+
 try:
     while True:
-        if time.time() - old_time > 1:
-            flow_rate = (pulse_count / calibration_factor) / (time.time() - old_time) * 60
+        current_time = time.time()
+        if current_time - old_time > 1:
+            flow_rate = (pulse_count / calibration_factor) / (current_time - old_time) * 60
             flow_millilitres = (flow_rate / 60) * 16700
             total_millilitres += flow_millilitres
 
-            # 유량 변화에 따른 LED 색상 변경
             if flow_rate > 0:
+                if not flow_started:
+                    flow_started = True
+                    total_millilitres = 0  # 흐름이 시작될 때 총 미리리터를 리셋
+                total_millilitres += flow_millilitres
+                last_flow_time = current_time
                 set_color(100, 0, 100)  # 초록색
             else:
                 set_color(0, 100, 100)  # 빨간색
+
+            # 물 흐름이 있었고, 정해진 시간 동안 물 흐름이 없었을 때 MQTT 메시지 전송
+            if flow_started and (current_time - last_flow_time >= flow_stop_delay):
                 publisher.publish_message({
                     "flowrate": total_millilitres,
                     "time": get_current_time_str(),
                     'temperature': -5,
                     'humidity': 30,
-                    'barometer':200
+                    'barometer': 200
                 })
-                total_millilitres = 0
+                print(f"Total volume sent: {total_millilitres/1000:.2f} L")
+                flow_started = False  # 메시지 전송 후 흐름 상태 리셋
 
             print(f"Flow rate: {flow_rate:.2f} mL/min")
-            print(f"Total volume: {total_millilitres/1000:.2f} mL")
+            print(f"Current volume: {total_millilitres/1000:.2f} L")
 
             pulse_count = 0
-            old_time = time.time()
+            old_time = current_time
 
 except KeyboardInterrupt:
     # 프로그램 종료

@@ -1,8 +1,27 @@
 import RPi.GPIO as GPIO
 import time
+from datetime import datetime
+from sample.pinot_sensor import AwsIotPublisher 
 
 # GPIO 핀 번호 설정 모드
 GPIO.setmode(GPIO.BCM)
+
+# AWS IoT Core 연결 정보
+endpoint = "a1abb207ddrmxk-ats.iot.ap-northeast-2.amazonaws.com"
+ca_file = "/home/pi/root-CA.crt"
+cert_file = "/home/pi/Rasp001.cert.pem"
+key_file = "/home/pi/Rasp001.private.key"
+client_id = "rasp001"
+topic = "device/1001/data"
+
+# AwsIotPublisher 인스턴스 생성
+publisher = AwsIotPublisher(endpoint, ca_file, cert_file, key_file, client_id, topic)
+
+# MQTT 연결 시도
+if publisher.connect():
+    print("Connected to AWS IoT Core")
+else:
+    print("Failed to connect to AWS IoT Core")
 
 # LED 핀 설정
 pins = {'R': 17, 'G': 27, 'B': 22}

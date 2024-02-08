@@ -2,15 +2,16 @@ import RPi.GPIO as GPIO
 import time
 from datetime import datetime
 from samples.pinot_aws_mqtt import AwsIotPublisher 
+import os
 
 # GPIO 핀 번호 설정 모드
 GPIO.setmode(GPIO.BCM)
 
 # AWS IoT Core 연결 정보
 endpoint = "a1abb207ddrmxk-ats.iot.ap-northeast-2.amazonaws.com"
-ca_file = "~/root-CA.crt"
-cert_file = "~/Rasp001.cert.pem"
-key_file = "~/Rasp001.private.key"
+ca_file = os.path.expanduser("~/root-CA.crt")
+cert_file = os.path.expanduser("~/Rasp001.cert.pem")
+key_file = os.path.expanduser("~/Rasp001.private.key")
 client_id = "rasp001"
 topic = "device/1001/data"
 

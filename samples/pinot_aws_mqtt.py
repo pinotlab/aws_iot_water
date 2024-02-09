@@ -1,7 +1,6 @@
 # aws_iot_publisher.py
 import json
 import socket
-import time
 from awscrt import mqtt
 from awsiot import mqtt_connection_builder
 import logging
@@ -22,6 +21,7 @@ class AwsIotPublisher:
         self.client_id = client_id
         self.topic = topic
         self.mqtt_connection = self.create_mqtt_connection()
+        self.is_connected_flag = False
     
     def create_mqtt_connection(self):
         return mqtt_connection_builder.mtls_from_path(
@@ -55,6 +55,7 @@ class AwsIotPublisher:
             logging.info("Wi-Fi connected, connecting to MQTT...")
             connect_future = self.mqtt_connection.connect()
             connect_future.result()  # wait for connection to be established
+            self.is_connected_flag = True  # 연결 성공 시 플래그 업데이트
             logging.info("MQTT connection established")
             return True
         else:
@@ -67,17 +68,6 @@ class AwsIotPublisher:
         disconnect_future.result()
         logging.info("Disconnected from MQTT")
 
-# # MQTT 메시지 전송을 위한 파라미터 설정
-# endpoint = "a1abb207ddrmxk-ats.iot.ap-northeast-2.amazonaws.com"
-# ca_file = "~/root-CA.crt"
-# cert_file = "~/Rasp001.cert.pem"
-# key_file = "~/Rasp001.private.key"
-# client_id = "rasp001"
-# topic = "device/1001/data"
-
-# # AwsIotPublisher 인스턴스 생성 및 사용
-# publisher = AwsIotPublisher(endpoint, ca_file, cert_file, key_file, client_id, topic)
-# if publisher.connect():
-#     # 여기서 물이 흐르다가 멈추는 로직을 감지하고 그때의 양을 보내는 코드를 구현하면 됩니다.
-#     publisher.publish_message({"time":get_current_time_str(), "flowrate": 1000, "temperature": -5,})  # 여기서 1000은 예시 값입니다.
-#     publisher.disconnect()
+    def is_connected(self):
+        # 연결 상태 플래그 반환
+        return self.is_connected_flag

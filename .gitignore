@@ -8,3 +8,8 @@ build/*
 # docs are updated automatically by .github/workflows/docs.yml
 docs/
 .vscode
+MacMonitor-Policy
+MacMonitor.cert.pem
+MacMonitor.private.key
+MacMonitor.public.key
+root-CA.crt

@@ -91,6 +91,9 @@ try:
 
             # 물 흐름이 있었고, 정해진 시간 동안 물 흐름이 없었을 때 MQTT 메시지 전송
             if flow_started and (current_time - last_flow_time >= flow_stop_delay):
+                if not publisher.is_connected():
+                    print("Reconnecting to AWS IoT Core")
+                    publisher.connect()
                 publisher.publish_message({
                     "flowrate": round(total_millilitres, 2),
                     "time": get_current_time_str(),

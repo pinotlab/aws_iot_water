@@ -3,17 +3,38 @@ import time
 from datetime import datetime
 from samples.pinot_aws_mqtt import AwsIotPublisher 
 import os
+import argparse
 
 # GPIO 핀 번호 설정 모드
 GPIO.setmode(GPIO.BCM)
 
+# argparse 객체 생성 및 파라미터 정의
+parser = argparse.ArgumentParser(description='AWS IoT Core connection settings')
+parser.add_argument('--endpoint', required=True, help='AWS IoT Core endpoint')
+parser.add_argument('--ca_file', required=True, help='Path to CA file')
+parser.add_argument('--cert_file', required=True, help='Path to certificate file')
+parser.add_argument('--key_file', required=True, help='Path to private key file')
+parser.add_argument('--client_id', required=True, help='MQTT client ID')
+parser.add_argument('--topic', required=True, help='MQTT topic to publish')
+
+# 입력받은 파라미터를 args 변수에 저장
+args = parser.parse_args()
+
+# 입력받은 파라미터로 AWS IoT Core 연결 정보 설정
+endpoint = args.endpoint
+ca_file = os.path.expanduser(args.ca_file)
+cert_file = os.path.expanduser(args.cert_file)
+key_file = os.path.expanduser(args.key_file)
+client_id = args.client_id
+topic = args.topic
+
 # AWS IoT Core 연결 정보
-endpoint = "a1abb207ddrmxk-ats.iot.ap-northeast-2.amazonaws.com"
-ca_file = os.path.expanduser("~/root-CA.crt")
-cert_file = os.path.expanduser("~/Rasp001.cert.pem")
-key_file = os.path.expanduser("~/Rasp001.private.key")
-client_id = "rasp001"
-topic = "device/1001/data"
+# endpoint = "a1abb207ddrmxk-ats.iot.ap-northeast-2.amazonaws.com"
+# ca_file = os.path.expanduser("~/root-CA.crt")
+# cert_file = os.path.expanduser("~/Rasp001.cert.pem")
+# key_file = os.path.expanduser("~/Rasp001.private.key")
+# client_id = "rasp001"
+# topic = "device/1001/data"
 
 # AwsIotPublisher 인스턴스 생성
 publisher = AwsIotPublisher(endpoint, ca_file, cert_file, key_file, client_id, topic)
